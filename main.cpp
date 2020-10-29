@@ -91,12 +91,13 @@ void	destroy_args(char **av)
 }
 
 int main(int ac, char **av) {
-	string	input;
-	string	id;
-	file	current_file;
-	char	**args;
-	int	std_fd_saved[2] = {dup(STDIN_FILENO), dup(STDOUT_FILENO)};
-	int	norme_pipe[2];
+	string			input;
+	string			id;
+	file			current_file;
+	extern char 	**environ;
+	char			**args;
+	int				std_fd_saved[2] = {dup(STDIN_FILENO), dup(STDOUT_FILENO)};
+	int				norme_pipe[2];
 
 	args = create_args(ac - 1, &av[1]);
 	if (!args)
