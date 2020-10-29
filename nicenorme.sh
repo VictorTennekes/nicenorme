@@ -1,1 +1,0 @@
-norminette | /Users/victor/Documents/Code/codam/niceNorme/a.out
