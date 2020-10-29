@@ -6,16 +6,15 @@
 #    By: vtenneke <vtenneke@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/08/04 18:20:34 by vtenneke      #+#    #+#                  #
-#    Updated: 2020/10/29 18:06:06 by tbruinem      ########   odam.nl          #
+#    Updated: 2020/10/29 18:23:23 by tbruinem      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		=	nicenorme
-SRC			=	main.cpp
-OBJ			=	$(SRC:%.cpp=%.o)
-CPPFLAGS	=	
+SRC			=	main.CXX
+OBJ			=	$(SRC:%.CXX=%.o)
+CXXFLAGS	=	
 DEBUG_FLAGS =	
-CPP			=	clang++
 KERNEL		=  $(shell uname)
 
 # COLORS
@@ -47,11 +46,11 @@ endif
 all: $(NAME)
 
 %.o: %.c
-	$(CPP) $(CPPFLAGS) $(DEBUG_FLAGS) -o $@ -c $<
+	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o $@ -c $<
 
 $(NAME): $(OBJ)
 	@echo "$(WHITE)/-----    Compiling $(NAME)        -----\\ $(RESET)"
-	$(CPP) $(DEBUG_FLAGS)  -o $(NAME) $^
+	$(CXX) $(DEBUG_FLAGS)  -o $(NAME) $^
 
 clean:
 	@echo "$(WHITE)/-----    Cleaning $(NAME)        -----\\ $(RESET)"
