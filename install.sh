@@ -1,3 +1,5 @@
+#!/bin/bash
+
 NAME="nicenorme"
 kernel=$(uname)
 
@@ -11,15 +13,15 @@ RED="\x1b[31;01m"
 BLACK="\x1b[30;01m"
 RESET="\x1b[0m"
 if [ "$kernel" = "Linux" ]; then
-	WHITE="\e[37;01m"
-	CYAN="\e[36;01m"
-	PINK="\e[35;01m"
-	BLUE="\e[34;01m"
-	YELLOW="\e[33;01m"
-	GREEN="\e[32;01m"
-	RED="\e[31;01m"
-	BLACK="\e[30;01m"
-	RESET="\e[0m"
+	WHITE="\033[37;01m"
+	CYAN="\033[36;01m"
+	PINK="\033[35;01m"
+	BLUE="\033[34;01m"
+	YELLOW="\033[33;01m"
+	GREEN="\033[32;01m"
+	RED="\033[31;01m"
+	BLACK="\033[30;01m"
+	RESET="\033[0m"
 fi
 
 get_answer () {
@@ -28,10 +30,10 @@ get_answer () {
 	install=false
 	while [ "$answered" = false ]; do
 		read answer
-		if [ "${answer::1}" == "Y" ] || [ "${answer::1}" == "y" ] || [ "${answer::1}" == "" ]; then
+		if [ "${answer::1}" = "Y" ] || [ "${answer::1}" = "y" ] || [ "${answer::1}" = "" ]; then
 			install=true
 			answered=true
-		elif [ "${answer::1}" == "N" ] || [ "${answer::1}" == "n" ] ; then
+		elif [ "${answer::1}" = "N" ] || [ "${answer::1}" = "n" ] ; then
 			answered=true
 		else
 			echo "please provide valid input"
@@ -40,7 +42,7 @@ get_answer () {
 }
 
 install () {
-	echo "Installing $CYAN$NAME$RESET at $WHITE$FILE$NAME$RESET..."
+	printf "Installing $CYAN$NAME$RESET at $WHITE$FILE$NAME$RESET...\n"
 	make > /dev/null &
 	sleep 1
 	sudo cp $NAME $FILE
@@ -63,10 +65,10 @@ update () {
 
 FILE=/usr/local/bin/
 if [ $# -eq 1 ]; then
-	if [ "$1" == "--help" ]; then
+	if [ "$1" = "--help" ]; then
 		print_help
 		exit ;
-	elif [ "$1" == "--update" ]; then
+	elif [ "$1" = "--update" ]; then
 		if ! [ -f "$FILE$NAME" ]; then
 			install
 			exit ;
