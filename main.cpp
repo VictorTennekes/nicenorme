@@ -6,7 +6,7 @@
 /*   By: vtenneke <vtenneke@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/28 20:03:43 by vtenneke      #+#    #+#                 */
-/*   Updated: 2020/10/29 14:55:59 by tbruinem      ########   odam.nl         */
+/*   Updated: 2020/10/29 17:08:49 by tbruinem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <fstream>
 #include <vector>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include "normeError.hpp"
 #include <sys/types.h>
@@ -43,13 +44,64 @@ message	parseError(string input) {
 	return (error);
 }
 
+char	*strdup(char *orig)
+{
+	size_t len = 0;
+	for (; orig && orig[len]; len++) {}
+	char	*dup = (char *)malloc(sizeof(char) * (len + 1));
+	if (!dup)
+		return (NULL);
+	for (size_t i = 0; i < len; i++)
+		dup[i] = orig[i];
+	dup[len] = '\0';
+	return (dup);
+}
+
+char	**create_args(int ac, char **av)
+{
+	char	**args = (char **)malloc(sizeof(char *) * (ac + 2));
+	if (!args)
+		return (NULL);
+	args[0] = strdup((char *)("norminette"));
+	if (!args[0])
+		return (NULL);
+	for (size_t i = 1; i < ac + 1; i++)
+	{
+		args[i] = strdup(av[i - 1]);
+		if (!args[i])
+			return (NULL);
+	}
+	args[ac + 1] = NULL;
+	return (args);
+}
+
+void	print_args(char **av)
+{
+	for (size_t i = 0; av[i]; i++)
+		dprintf(2, "ARG[%ld] = %s\n", i, av[i]);
+}
+
+void	destroy_args(char **av)
+{
+	for (size_t i = 0; av[i]; i++)
+	{
+		free(av[i]);
+	}
+	free(av);
+}
+
 int main(int ac, char **av) {
 	string	input;
 	string	id;
 	file	current_file;
+	char	**args;
 	int	std_fd_saved[2] = {dup(STDIN_FILENO), dup(STDOUT_FILENO)};
 	int	norme_pipe[2];
 
+	args = create_args(ac - 1, &av[1]);
+	if (!args)
+		return (1);
+//	print_args(args);
 	if (pipe(norme_pipe) == -1 || dup2(norme_pipe[0], STDIN_FILENO) == -1)
 		exit (1);
 	int pid = fork();
@@ -72,10 +124,11 @@ int main(int ac, char **av) {
 		close(saved_io[1]);
 		close(tmp_pipe[0]);
 		close(tmp_pipe[1]);
-		if (execlp(norm_path.c_str(), "norminette", NULL) == -1)
+		if (execve(norm_path.c_str(), args, environ) == -1)
 			exit (1);
 		exit (0);
 	}
+	destroy_args(args);
 	close(norme_pipe[1]);
 	while (getline(std::cin, input)) {
 		message	current_error;
