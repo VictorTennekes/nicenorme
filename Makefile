@@ -6,7 +6,7 @@
 #    By: vtenneke <vtenneke@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/08/04 18:20:34 by vtenneke      #+#    #+#                  #
-#    Updated: 2020/08/04 18:20:34 by vtenneke      ########   odam.nl          #
+#    Updated: 2020/10/29 18:06:06 by tbruinem      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ OBJ			=	$(SRC:%.cpp=%.o)
 CPPFLAGS	=	
 DEBUG_FLAGS =	
 CPP			=	clang++
+KERNEL		=  $(shell uname)
 
 # COLORS
 WHITE   = \x1b[37;01m
@@ -27,6 +28,17 @@ GREEN   = \x1b[32;01m
 RED     = \x1b[31;01m
 BLACK   = \x1b[30;01m
 RESET   = \x1b[0m
+ifeq ($(KERNEL), Linux)
+	WHITE   = \e[37;01m
+	CYAN    = \e[36;01m
+	PINK    = \e[35;01m
+	BLUE    = \e[34;01m
+	YELLOW  = \e[33;01m
+	GREEN   = \e[32;01m
+	RED     = \e[31;01m
+	BLACK   = \e[30;01m
+	RESET   = \e[0m
+endif
 
 ifeq ($(DEBUG), 1)
 	DEBUG_FLAGS += -g -fsanitize=address

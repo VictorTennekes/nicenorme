@@ -1,4 +1,4 @@
-# Nicenorm
+# Nicenorme
 
 Nicenorme is a wrapper for norminette that makes it a little more pleasant to look at.
 
@@ -6,7 +6,7 @@ Nicenorme is a wrapper for norminette that makes it a little more pleasant to lo
 
 ## Installation
 ```
-	git clone https://github.com/VictorTennekes/nicenorme && ./install.sh
+	git clone https://github.com/VictorTennekes/nicenorme && sudo sh ./nicenorme/install.sh
 ```
 By default `nicenorme` will be installed at `/usr/local/bin/nicenorm`.
 To specify a custom path run the installer as follows: `./install.sh <PATH>`.

@@ -43,7 +43,7 @@ install () {
 	echo "Installing $CYAN$NAME$RESET at $WHITE$FILE$NAME$RESET..."
 	make > /dev/null &
 	sleep 1
-	cp $NAME $FILE
+	sudo cp $NAME $FILE
 
 	make fclean > /dev/null
 }
