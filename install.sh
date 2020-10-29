@@ -43,11 +43,12 @@ get_answer () {
 
 install () {
 	printf "Installing $CYAN$NAME$RESET at $WHITE$FILE$NAME$RESET...\n"
-	make > /dev/null &
-	sleep 1
+	make > /dev/null
+	wait
 	sudo cp $NAME $FILE
 
 	make fclean > /dev/null
+	echo "Done!"
 }
 
 print_help () {
