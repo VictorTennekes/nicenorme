@@ -47,14 +47,10 @@ int main(int ac, char **av) {
 	string	input;
 	string	id;
 	file	current_file;
-	int	std_fd_saved[2];
-	std_fd_saved[0] = dup(STDIN_FILENO);
-	std_fd_saved[1] = dup(STDOUT_FILENO);
+	int	std_fd_saved[2] = {dup(STDIN_FILENO), dup(STDOUT_FILENO)};
 	int	norme_pipe[2];
 
-	if (pipe(norme_pipe) == -1)
-		exit (1);
-	if (dup2(norme_pipe[0], STDIN_FILENO) == -1)
+	if (pipe(norme_pipe) == -1 || dup2(norme_pipe[0], STDIN_FILENO) == -1)
 		exit (1);
 	int pid = fork();
 	if (pid == 0)
@@ -62,31 +58,25 @@ int main(int ac, char **av) {
 		if (dup2(norme_pipe[1], STDOUT_FILENO) == -1)
 			exit (1);
 		int		tmp_pipe[2];
-		int		saved_io[2];
+		int		saved_io[2] = {dup(STDIN_FILENO), dup(STDOUT_FILENO)};
 		if (pipe(tmp_pipe) == -1)
 			exit (1);
-		saved_io[0] = dup(STDIN_FILENO);
-		saved_io[1] = dup(STDOUT_FILENO);
-		string norm_path;
-		if (dup2(tmp_pipe[1], STDOUT_FILENO) == -1)
-			exit (1);
-		if (dup2(tmp_pipe[0], STDIN_FILENO) == -1)
+		if (dup2(tmp_pipe[1], STDOUT_FILENO) == -1 || dup2(tmp_pipe[0], STDIN_FILENO) == -1)
 			exit (1);
 		system("which norminette");
+		string norm_path;
 		cin >> norm_path;
-		if (dup2(saved_io[1], STDOUT_FILENO) == -1)
-			exit (1);
-		if (dup2(saved_io[0], STDIN_FILENO) == -1)
+		if (dup2(saved_io[1], STDOUT_FILENO) == -1 || dup2(saved_io[0], STDIN_FILENO) == -1)
 			exit (1);
 		close(saved_io[0]);
 		close(saved_io[1]);
 		close(tmp_pipe[0]);
 		close(tmp_pipe[1]);
-		cerr << "Norme path bitches: " << norm_path << endl;
 		if (execlp(norm_path.c_str(), "norminette", NULL) == -1)
 			exit (1);
 		exit (0);
 	}
+	close(norme_pipe[1]);
 	while (getline(std::cin, input)) {
 		message	current_error;
 
@@ -105,18 +95,11 @@ int main(int ac, char **av) {
 		} else if (id == "Error") {
 			current_file.error.push_back(parseError(input));
 		}
-		if (std::cin.eof())
-			break ;
+
 	}
-	cerr << "YEET" << endl;
 	close(norme_pipe[0]);
-	close(norme_pipe[1]);
 	close(std_fd_saved[0]);
 	close(std_fd_saved[1]);
-	exit(0);
 	waitpid(pid, NULL, 0);
-	
-//	if (dup2(std_fd_saved[0], STDIN_FILENO) == -1)
-//		exit (1);
 	current_file.print_errors(true);
 }
