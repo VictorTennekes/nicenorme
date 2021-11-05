@@ -1,3 +1,4 @@
+> :warning: DEPRECATED!
 # Nicenorme
 
 Nicenorme is a wrapper for norminette that makes it a little more pleasant to look at.
